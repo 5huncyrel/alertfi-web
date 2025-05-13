@@ -11,5 +11,5 @@ urlpatterns = [
     path('api/sensor/history/', views.get_sensor_history),
     path('api/sensor/log/', views.create_history_log),
     path('api/sensor/control/', views.sensor_control),
-    path('api/sensor/update/', views.update_sensor_data),
+    path('api/sensor/data/', views.update_sensor_data),
 ]
