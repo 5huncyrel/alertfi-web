@@ -61,6 +61,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CORS_ALLOWED_ORIGINS = [
+    " https://alertfi-web-1a01c.web.app",
+]
+
+
 ROOT_URLCONF = 'project.urls'
 
 TEMPLATES = [
