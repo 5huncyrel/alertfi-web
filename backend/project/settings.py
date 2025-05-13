@@ -15,7 +15,6 @@ DATABASES = {
     )
 }
 
-ALLOWED_HOSTS = ['alertfi-web.onrender.com', 'localhost', '127.0.0.1']
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -26,7 +25,7 @@ SECRET_KEY = 'django-insecure-!!-f%v565&ma()0#lst7jv3@*yqa5s!7qnen(t@uv5$#5$04n8
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['alertfi-web.onrender.com', 'localhost', '127.0.0.1']
 
 AUTH_USER_MODEL = 'alertfi.User'
 # Application definition
