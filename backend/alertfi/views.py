@@ -154,18 +154,37 @@ def sensor_control(request):
     elif request.method == 'POST':
         sensor_state["on"] = request.data.get("sensor_on", True)
         return Response({"sensor_on": sensor_state["on"]}, status=status.HTTP_200_OK)
-
+    
+    
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def update_sensor_data(request):
     ppm = request.data.get('ppm')
-    if ppm is not None:
-        status_value = "Safe"
-        ppm = float(ppm)
-        if ppm > 1000:
-            status_value = "Fire Risk"
-        elif ppm > 500:
-            status_value = "Warning"
 
-        sensor_data = SensorData.objects.create(ppm=ppm, status=status_value)
-        return Response({"message": "Sensor data updated", "ppm": ppm, "status": status_value})
-    return Response({"error": "PPM value required"}, status=400)
+    if ppm is None:
+        return Response({"error": "PPM value required"}, status=400)
+
+    try:
+        ppm = float(ppm)
+    except ValueError:
+        return Response({"error": "Invalid PPM value"}, status=400)
+
+    # Determine status based on ppm
+    if ppm > 1000:
+        status_value = "Fire Risk"
+    elif ppm > 500:
+        status_value = "Warning"
+    else:
+        status_value = "Safe"
+
+    # Save to SensorData
+    sensor_data = SensorData.objects.create(ppm=ppm, status=status_value)
+
+    # Save to HistoryLog
+    HistoryLog.objects.create(sensor_data=sensor_data, action_taken=status_value)
+
+    return Response({
+        "message": "Sensor data updated",
+        "ppm": ppm,
+        "status": status_value
+    }, status=201)
