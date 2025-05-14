@@ -50,7 +50,6 @@ def verify_email(request, user_id, token):
     else:
         return Response({'error': 'Invalid or expired token.'}, status=400)
 
-# Login User with attempt limit
 @api_view(['POST'])
 def login_user(request):
     serializer = LoginSerializer(data=request.data)
@@ -64,7 +63,9 @@ def login_user(request):
         if attempts >= 5:
             return Response({'error': 'Too many attempts. Try again in 5 minutes.'}, status=403)
 
-        user = authenticate(request, email=email, password=password)
+        # authenticate with username=email because USERNAME_FIELD = 'email'
+        user = authenticate(request, username=email, password=password)
+
         if user:
             if not user.is_active:
                 return Response({'error': 'Please verify your email first.'}, status=403)
@@ -75,6 +76,8 @@ def login_user(request):
             cache.set(cache_key, attempts + 1, timeout=300)
             return Response({'error': 'Invalid credentials'}, status=400)
     return Response(serializer.errors, status=400)
+
+
 
 # Forgot Password
 @api_view(['POST'])
