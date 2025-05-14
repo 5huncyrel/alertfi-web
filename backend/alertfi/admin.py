@@ -5,28 +5,23 @@ from .models import User, SensorData, HistoryLog
 # Custom UserAdmin
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
-    model = User
-    list_display = ('username', 'email', 'is_active', 'is_staff', 'date_joined')
-    list_filter = ('is_active', 'is_staff')
-    search_fields = ('username', 'email')
-    ordering = ('username',)
+    ordering = ['email']            # was ['username']
+    list_display = ['email', 'is_staff', 'is_active']  # remove 'username'
+    search_fields = ['email']
 
+    # Override fieldsets to include email instead of username
     fieldsets = (
-        (None, {'fields': ('username', 'email', 'password')}),
+        (None, {'fields': ('email', 'password')}),
         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
-        ('Important Dates', {'fields': ('last_login', 'date_joined')}),
+        ('Important dates', {'fields': ('last_login',)}),
     )
 
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': (
-                'username', 'email', 'password1', 'password2',
-                'is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'
-            ),
+            'fields': ('email', 'password1', 'password2'),
         }),
     )
-
 
 # Register SensorData model
 @admin.register(SensorData)
