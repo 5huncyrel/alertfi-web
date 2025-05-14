@@ -8,21 +8,19 @@ from .validators import validate_email_domain, validate_password_strength
 User = get_user_model()
 
 class RegisterSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, min_length=8)
+
     class Meta:
         model = User
-        fields = ['email', 'first_name', 'last_name', 'password']
-
-    def validate_email(self, value):
-        validate_email_domain(value)
-        return value
-
-    def validate_password(self, value):
-        validate_password_strength(value)
-        return value
+        fields = ['username', 'email', 'password']
 
     def create(self, validated_data):
-        validated_data['password'] = make_password(validated_data['password'])
-        user = User.objects.create(**validated_data)
+        user = User.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data['email'],
+            password=validated_data['password'],
+            is_active=False  # Inactive until verified
+        )
         return user
 
 # User Login Serializer

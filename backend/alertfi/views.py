@@ -11,6 +11,7 @@ from django.core.cache import cache
 from django.conf import settings
 from .models import User, SensorData, HistoryLog
 import jwt
+from django.shortcuts import get_object_or_404
 from .serializers import RegisterSerializer, LoginSerializer, SensorDataSerializer, HistoryLogSerializer
 
 # Register User
@@ -18,35 +19,36 @@ from .serializers import RegisterSerializer, LoginSerializer, SensorDataSerializ
 def register(request):
     serializer = RegisterSerializer(data=request.data)
     if serializer.is_valid():
-        if User.objects.filter(email=serializer.validated_data['email']).exists():
+        email = serializer.validated_data['email']
+        if User.objects.filter(email=email).exists():
             return Response({'error': 'Email already exists'}, status=400)
+        user = serializer.save()
 
-        user = serializer.save(is_active=False)  # Set inactive until email verified
         token = default_token_generator.make_token(user)
         verification_url = request.build_absolute_uri(
             reverse('verify_email', args=[user.pk, token])
         )
         send_mail(
-            'Verify Your Email',
-            f'Click to verify: {verification_url}',
+            'Verify your AlertFi account',
+            f'Click this link to verify your email: {verification_url}',
             'noreply@alertfi.com',
-            [user.email]
+            [user.email],
+            fail_silently=False,
         )
         return Response({'message': 'User created. Please verify your email.'}, status=201)
+
     return Response(serializer.errors, status=400)
 
 # Verify Email
 @api_view(['GET'])
 def verify_email(request, user_id, token):
-    try:
-        user = User.objects.get(pk=user_id)
-        if default_token_generator.check_token(user, token):
-            user.is_active = True
-            user.save()
-            return Response({'message': 'Email verified successfully'})
-        return Response({'error': 'Invalid token'}, status=400)
-    except User.DoesNotExist:
-        return Response({'error': 'User not found'}, status=404)
+    user = get_object_or_404(User, pk=user_id)
+    if default_token_generator.check_token(user, token):
+        user.is_active = True
+        user.save()
+        return Response({'message': 'Email verified successfully.'})
+    else:
+        return Response({'error': 'Invalid or expired token.'}, status=400)
 
 # Login User with attempt limit
 @api_view(['POST'])
