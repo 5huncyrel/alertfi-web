@@ -165,6 +165,16 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
+EMAIL_HOST_USER = '584f08fed73cb1'      # your Mailtrap username
+EMAIL_HOST_PASSWORD = '****d7be'         # your Mailtrap password
+EMAIL_PORT = 2525                        # or 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'AlertFi <noreply@alertfi.com>'
+
+
+
 # JWT Settings (optional, to set expiration for the token)
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
