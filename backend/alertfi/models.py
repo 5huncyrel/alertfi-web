@@ -1,9 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.contrib.auth.base_user import BaseUserManager
-from django.core.validators import RegexValidator
+from .validators import validate_email_domain  # import your validator
 
-# Custom User Manager
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -17,14 +16,18 @@ class CustomUserManager(BaseUserManager):
     def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+
         return self.create_user(email, password, **extra_fields)
 
-
-# Custom User Model
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(
         unique=True,
-        validators=[...]
+        validators=[validate_email_domain],  # use the email validator here
     )
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
@@ -32,11 +35,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = CustomUserManager()
 
-    USERNAME_FIELD = 'email'  # login will now use email
+    USERNAME_FIELD = 'email'  # login uses email now
     REQUIRED_FIELDS = []  # no username required
 
     def __str__(self):
         return self.email
+
 
 
 

@@ -12,9 +12,6 @@ def validate_email_domain(value):
             'Invalid email format. Example: name@example.com or name@example.com.ph'
         )
 
-
-
-
 def validate_password_strength(value):
     """Ensure the password has at least 8 characters and a special character."""
     if len(value) < 8:
