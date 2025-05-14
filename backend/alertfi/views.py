@@ -139,7 +139,6 @@ def create_history_log(request):
             return Response({'error': 'Sensor not found'}, status=404)
     return Response({'error': 'Invalid data'}, status=400)
 
-
 sensor_state = {"on": True}
 
 @api_view(['GET', 'POST'])
@@ -150,8 +149,7 @@ def sensor_control(request):
     elif request.method == 'POST':
         sensor_state["on"] = request.data.get("sensor_on", True)
         return Response({"sensor_on": sensor_state["on"]}, status=status.HTTP_200_OK)
-    
-    
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def update_sensor_data(request):
