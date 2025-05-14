@@ -19,14 +19,14 @@ class RegisterSerializer(serializers.ModelSerializer):
             username=validated_data['username'],
             email=validated_data['email'],
             password=validated_data['password'],
-            is_active=False  # Inactive until verified
+            is_active=False  # inactive until email verified
         )
         return user
 
-# User Login Serializer
 class LoginSerializer(serializers.Serializer):
-    email = serializers.EmailField()
+    username = serializers.CharField()
     password = serializers.CharField(write_only=True)
+
 
 # SensorData Serializer
 class SensorDataSerializer(serializers.ModelSerializer):

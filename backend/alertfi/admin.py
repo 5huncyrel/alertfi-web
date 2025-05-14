@@ -6,14 +6,13 @@ from .models import User, SensorData, HistoryLog
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
     model = User
-    list_display = ('email', 'first_name', 'last_name', 'is_active', 'is_staff', 'date_joined')
+    list_display = ('username', 'email', 'is_active', 'is_staff', 'date_joined')
     list_filter = ('is_active', 'is_staff')
-    search_fields = ('email', 'first_name', 'last_name')
-    ordering = ('email',)
+    search_fields = ('username', 'email')
+    ordering = ('username',)
 
     fieldsets = (
-        (None, {'fields': ('email', 'password')}),
-        ('Personal Info', {'fields': ('first_name', 'last_name')}),
+        (None, {'fields': ('username', 'email', 'password')}),
         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
         ('Important Dates', {'fields': ('last_login', 'date_joined')}),
     )
@@ -22,11 +21,12 @@ class UserAdmin(BaseUserAdmin):
         (None, {
             'classes': ('wide',),
             'fields': (
-                'email', 'first_name', 'last_name', 'password1', 'password2',
+                'username', 'email', 'password1', 'password2',
                 'is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'
             ),
         }),
     )
+
 
 # Register SensorData model
 @admin.register(SensorData)
