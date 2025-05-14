@@ -172,7 +172,6 @@ EMAIL_HOST_PASSWORD = 'qwertyuiop'         # your Mailtrap password
 EMAIL_PORT = 587                        # or 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'shuncyrel@gmail.com'
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
 
