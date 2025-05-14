@@ -151,7 +151,6 @@ def sensor_control(request):
         return Response({"sensor_on": sensor_state["on"]}, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
 def update_sensor_data(request):
     ppm = request.data.get('ppm')
     if ppm is not None:
